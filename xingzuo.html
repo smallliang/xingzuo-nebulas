@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="xingzuo.css">
+    <script src="xingzuo.js"></script>
     <title>星座判断</title>
 </head>
 <body>
@@ -19,11 +20,11 @@
         <div class="assert">日</div>
     </div>
     <div class="panel">
-        <div class="onebutton">计算</div>
+        <div class="onebutton" onclick="caculate()">计算</div>
     </div>
-    <div class="panel bigtitle xzret" id="xingzuoresult">水瓶座</div>
+    <div class="panel bigtitle xzret" id="constellation_result"></div>
     <div class="panel bigtitle">与你相称的星座：</div>
-    <div class="panel bigtitle xzret" id="xiangchenresult">白羊座，双鱼座</div>
+    <div class="panel bigtitle xzret" id="pair_result"></div>
     <div class="panel bigtitle">一句你想说的话：</div>
     <div class="panel">
         <input type="text" id="wantosay" class="inputresult">
