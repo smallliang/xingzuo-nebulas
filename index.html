@@ -81,7 +81,8 @@
 						
 						</div>           
 			         </div>
-
+                    <p hidden="hidden" id="last_from"></p>
+                    <p hidden="hidden" id="last_date"></p>
 <!-- 					<div class="tm-social-icons-container text-xs-center">
 	                    <a href="#" class="tm-social-link"><i class="fa fa-facebook"></i></a>
 	                    <a href="#" class="tm-social-link"><i class="fa fa-google-plus"></i></a>
@@ -195,8 +196,10 @@
                     if (resp.status == 1) {
                         txhash = null;
                         check_address = resp.from;
+                        document.getElementById('last_from').value = check_address;
                         var date = $('#month').val() + '.' + $('#day').val();
                         check_date = date;
+                        document.getElementById('last_date').value = check_date;
                         console.log(check_address,check_date);
                         alert(`保存成功！`);
                     } else if (resp.status == 0) {
