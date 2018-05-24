@@ -58,8 +58,9 @@ TheConstellation.prototype ={
         this.data.put(from+date, constellationItem);
     },
 
-    get:function(from,date){
-        if(!from || !date){
+    get:function(date){
+        var from = Blockchain.transaction.from;
+        if(!date){
             throw new Error("empty info")
         }
         return this.data.get(from+date);

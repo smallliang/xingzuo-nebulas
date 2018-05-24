@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>星云星座链</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">  <!-- Google web font "Open Sans" -->
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  
+  <link rel="stylesheet" href="css/demo.css" />
+  <link rel="stylesheet" href="css/templatemo-style.css">
+  
+  <script type="text/javascript" src="js/modernizr.custom.86080.js"></script>
+  <script src="xingzuo.js"></script>
+	</head>
+
+	<body>
+
+			<div id="particles-js"></div>
+		
+			<ul class="cb-slideshow">
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	        </ul>
+
+			<div class="container-fluid">
+				<div class="row cb-slideshow-text-container ">
+					<div class= "tm-content col-xl-6 col-sm-8 col-xs-8 ml-auto section">
+					<header class="mb-5"><h1>星云星座链</h1></header>
+					<P class="mb-5">将你的星座与你想说的话永远存入星云链~</P>
+					
+                    <div class="subscribe-form">
+               	    	<div class="row form-section">
+
+							<div class="col-md-3 col-sm-3 col-xs-3">
+			                      <input name="month" type="text" class="form-control" id="month" placeholder="月份" required/>
+				  			</div>
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                  <input name="date" type="text" class="form-control" id="day" placeholder="日期" required/>
+                            </div>
+                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                <button class="tm-btn-subscribe" id="caculate" onclick="caculate()">计算</button>
+                            </div>
+    						<div class="col-md-5 col-sm-5 col-xs-5">
+                                <input type="text" class="form-control" id="constellation_result" placeholder="你的星座" ></input>
+                            </div>
+                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                <input type="text" class="form-control" id="pair_result" placeholder="与你相称的星座" ></input>
+                            </div>
+						</div>
+                    </div>
+           
+
+                                                
+                    
+                    <div class="subscribe-form">
+						<div class="row form-section">
+
+
+                            <div class="col-md-7 col-sm-7 col-xs-7">
+                                  <input name="wantosay" type="text" class="form-control" id="wantosay" placeholder="想说的话" required/>
+                            </div>
+                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                <button class="tm-btn-subscribe" id="submitBtn">保存</button>
+                            </div>
+                            
+							<div class="col-md-7 col-sm-7 col-xs-7">
+			                      <input name="text" type="text" class="form-control" id="check_input" placeholder="查看上一个使用者是否与你有缘" required/>
+				  			</div>
+				  			
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<button class="tm-btn-subscribe" id="check">查询</button>
+							</div>
+						
+						</div>           
+			         </div>
+
+<!-- 					<div class="tm-social-icons-container text-xs-center">
+	                    <a href="#" class="tm-social-link"><i class="fa fa-facebook"></i></a>
+	                    <a href="#" class="tm-social-link"><i class="fa fa-google-plus"></i></a>
+	                    <a href="#" class="tm-social-link"><i class="fa fa-twitter"></i></a>
+	                    <a href="#" class="tm-social-link"><i class="fa fa-linkedin"></i></a>
+	                </div> -->
+
+					</div>
+				</div>	
+			</div>	
+	</body>
+
+	<script type="text/javascript" src="js/particles.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+
+	<script src=lib/jquery-3.3.1.min.js></script>
+	<script src=lib/nebPay.js></script>
+	<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
+	<script src=lib/nebulas.js></script>
+    <script>
+        "use strict";
+        var dappAddress = "n1oedLCSnb6zbgK4gM2HtVA7Vw15D2J9YPC";
+        var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            neb = new nebulas.Neb();
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+
+        var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+        var nebPay = new NebPay();
+        var serialNumber
+        var txhash
+        var check_address
+        var check_date
+
+        if(typeof(webExtensionWallet) === "undefined"){
+            alert ("星云网页钱包插件尚未安装\n请到https://github.com/ChengOrangeJu/WebExtensionWallet处安装.")
+        }
+
+        $("#check").click(function(){
+            var from = check_address;
+            console.log(from);
+            var value = "0";
+            var nonce = "0";
+            var gas_price = "1000000";
+            var gas_limit = "2000000";
+            var callFunction = "get";
+            var callArgs = "[\"" + check_date + "\"]"; //in the form of ["args"]
+            var contract = {
+                "function": callFunction,
+                "args": callArgs
+            }
+            neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+                dealResult(resp)
+            }).catch(function (err) {
+                console.log("error:" + err.message)
+            })
+
+        })
+
+        function dealResult(resp) {
+            var result = resp.result    ////resp is an object, resp.result is a JSON string
+            console.log(result);
+            var obj = JSON.parse(result);
+            alert("作者：" + obj.author + "\nTa对你说的话：" + obj.contents + "\nTa的生日" + obj.date + "\nTa的星座：" + obj.constellation + "\n与Ta相称的星座：" + obj.pair_constellation +"\n是否有你呢？");
+        }
+
+        $("#submitBtn").click(function() {
+            var to = dappAddress;
+            var value = "0";
+            var callFunction = "save";
+            var content = $('#wantosay').val();
+            var date = $('#month').val() + '.' + $('#day').val();
+            var constellation = $('#constellation_result').val();
+            var pair_result = $('#pair_result').val();
+            if (content=='' || constellation==''){
+                alert('请先计算星座或输入文章内容');
+            } else {
+
+
+                var callArgs = "[\"" + content + "\",\"" + date + "\",\"" + constellation + "\",\"" + pair_result + "\"]"
+
+                serialNumber = nebPay.call(to, value, callFunction, callArgs, {   
+                    listener: function(value){
+                        txhash = value.txhash;
+                        funcIntervalQuery();
+                    }
+                });             
+            }
+
+
+            // intervalQuery = setInterval(function () {
+            //     funcIntervalQuery();
+            // }, 20000);
+        });
+
+        var intervalQuery
+
+        function funcIntervalQuery() {
+            // nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+            //     .then(function (resp) {
+            //         console.log("tx result: " + resp)   //resp is a JSON string
+            //         var respObject = JSON.parse(resp)
+            //         if(respObject.code === 0){
+            //             alert(`set ${$("#content").val()} succeed!`)
+            //             clearInterval(intervalQuery)
+            //         }
+            //     })
+            neb.api.getTransactionReceipt({hash: txhash})
+                .then(function(resp,date){
+                    console.log(resp);
+                    if (resp.status == 1) {
+                        txhash = null;
+                        check_address = resp.from;
+                        var date = $('#month').val() + '.' + $('#day').val();
+                        check_date = date;
+                        console.log(check_address,check_date);
+                        alert(`保存成功！`);
+                    } else if (resp.status == 0) {
+                        alert(resp.execute_result);
+                    } else {
+                        setTimeout(function(){
+                            funcIntervalQuery();
+                        }, 10000);
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+
+        function cbPush(resp) {
+            console.log("response of push: " + JSON.stringify(resp))
+        }
+
+    </script>
+</html>

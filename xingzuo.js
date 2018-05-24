@@ -36,8 +36,8 @@ function caculate() {
                 constellation_ret = constellation_list[month];
                 pair_ret = pair_list[month];
             }
-            document.getElementById('constellation_result').innerHTML=constellation_ret;
-            document.getElementById('pair_result').innerHTML=pair_ret;
+            document.getElementById('constellation_result').value=constellation_ret;
+            document.getElementById('pair_result').value=pair_ret;
         }else {
             alert('日期必须在1到'+max_day+'之间');
         }
