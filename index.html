@@ -121,9 +121,10 @@
         }
 
         $("#check").click(function(){
-            var url = "207.148.75.94\\last_check.txt";
+            var url = "last_check.txt";
             var htmlobj= $.ajax({url:url,async:false});  
-            console.log(htmlobj);
+            var obj = JSON.parse(htmlobj.responseText);
+            console.log(obj);
 
             console.log(last_from, last_date);
             var value = "0";
@@ -198,11 +199,10 @@
                     if (resp.status == 1) {
                         txhash = null;
                         check_address = resp.from;
-                        document.getElementById('last_from').value = check_address;
                         console.log(document.getElementById('last_from').value.trim());
                         var date = $('#month').val() + '.' + $('#day').val();
                         check_date = date;
-                        document.getElementById('last_date').value = check_date;
+
                         console.log(check_address,check_date);
                         alert(`保存成功！`);
                     } else if (resp.status == 0) {
