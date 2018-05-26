@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/templatemo-style.css">
   
   <script type="text/javascript" src="js/modernizr.custom.86080.js"></script>
+  <script type="text/javascript" src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script> 
   <script src="xingzuo.js"></script>
 	</head>
 
@@ -81,8 +82,6 @@
 						
 						</div>           
 			         </div>
-                    <p hidden="hidden" id="last_from"></p>
-                    <p hidden="hidden" id="last_date"></p>
 <!-- 					<div class="tm-social-icons-container text-xs-center">
 	                    <a href="#" class="tm-social-link"><i class="fa fa-facebook"></i></a>
 	                    <a href="#" class="tm-social-link"><i class="fa fa-google-plus"></i></a>
@@ -98,7 +97,7 @@
 	<script type="text/javascript" src="js/particles.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 
-	<script src=lib/jquery-3.3.1.min.js></script>
+	<!-- <script src=lib/jquery-3.3.1.min.js></script> -->
 	<script src=lib/nebPay.js></script>
 	<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
 	<script src=lib/nebulas.js></script>
@@ -114,27 +113,30 @@
         var nebPay = new NebPay();
         var serialNumber
         var txhash
-        var check_address
-        var check_date
+        var last_from
+        var last_date
 
         if(typeof(webExtensionWallet) === "undefined"){
             alert ("星云网页钱包插件尚未安装\n请到https://github.com/ChengOrangeJu/WebExtensionWallet处安装.")
         }
 
         $("#check").click(function(){
-            var from = check_address;
-            console.log(from);
+            var url = "207.148.75.94\\last_check.txt";
+            var htmlobj= $.ajax({url:url,async:false});  
+            console.log(htmlobj);
+
+            console.log(last_from, last_date);
             var value = "0";
             var nonce = "0";
             var gas_price = "1000000";
             var gas_limit = "2000000";
             var callFunction = "get";
-            var callArgs = "[\"" + check_date + "\"]"; //in the form of ["args"]
+            var callArgs = "[\"" + last_date + "\"]"; //in the form of ["args"]
             var contract = {
                 "function": callFunction,
                 "args": callArgs
             }
-            neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+            neb.api.call(last_from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
                 dealResult(resp)
             }).catch(function (err) {
                 console.log("error:" + err.message)
@@ -197,6 +199,7 @@
                         txhash = null;
                         check_address = resp.from;
                         document.getElementById('last_from').value = check_address;
+                        console.log(document.getElementById('last_from').value.trim());
                         var date = $('#month').val() + '.' + $('#day').val();
                         check_date = date;
                         document.getElementById('last_date').value = check_date;
