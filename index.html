@@ -113,20 +113,23 @@
         var nebPay = new NebPay();
         var serialNumber
         var txhash
-        var last_from
-        var last_date
+        var last_from = null
+        var last_date = null
 
         if(typeof(webExtensionWallet) === "undefined"){
             alert ("星云网页钱包插件尚未安装\n请到https://github.com/ChengOrangeJu/WebExtensionWallet处安装.")
         }
 
         $("#check").click(function(){
-            var url = "last_check.txt";
-            var htmlobj= $.ajax({url:url,async:false});  
-            var obj = JSON.parse(htmlobj.responseText);
-            console.log(obj);
-
-            console.log(last_from, last_date);
+            if (last_from == null || last_date == null) {
+                var url = "last_check.txt";
+                var htmlobj= $.ajax({url:url,async:false}); 
+                var restext = htmlobj.responseText;
+                var obj = JSON.parse(restext);
+                last_from = obj.last_from;
+                last_date = obj.last_date;
+                console.log(last_from, last_date);
+            }
             var value = "0";
             var nonce = "0";
             var gas_price = "1000000";
@@ -198,12 +201,12 @@
                     console.log(resp);
                     if (resp.status == 1) {
                         txhash = null;
-                        check_address = resp.from;
+                        last_from = resp.from;
                         console.log(document.getElementById('last_from').value.trim());
                         var date = $('#month').val() + '.' + $('#day').val();
-                        check_date = date;
+                        last_date = date;
 
-                        console.log(check_address,check_date);
+                        console.log(last_from,last_date);
                         alert(`保存成功！`);
                     } else if (resp.status == 0) {
                         alert(resp.execute_result);
@@ -216,10 +219,6 @@
                 .catch(function (err) {
                     console.log(err);
                 });
-        }
-
-        function cbPush(resp) {
-            console.log("response of push: " + JSON.stringify(resp))
         }
 
     </script>
